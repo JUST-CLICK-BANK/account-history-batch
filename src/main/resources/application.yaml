@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: batchServer
+  datasource:
+    url: jdbc:mysql://localhost:3306/account_history
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/AccountHistory
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: embedded
+
+server:
+  port: 8081

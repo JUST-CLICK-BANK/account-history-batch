@@ -1,0 +1,27 @@
+package com.click.batchServer.domain.mongo;
+
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Getter
+@Setter
+@Document(collection = "account_history")
+public class AccountHistoryDocument {
+    @Id
+    private String bhId;
+    private LocalDateTime bhAt;
+    private String bhName;
+    private Long bhAmount;
+    private String myAccount;
+    private String yourAccount;
+    private String bhStatus;
+    private Long bhBalance;
+    private String bhOutType;
+    private Long cardId;
+    private String bhReceive;
+    private String bhMemo;
+    private String categoryName;
+}
