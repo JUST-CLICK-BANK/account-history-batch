@@ -19,7 +19,7 @@ public class BatchScheduler {
 
     private final Job importAccountHistoryJob;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 */3 * * * ?")
     public void runJob() {
         try {
             jobLauncher.run(importAccountHistoryJob, new JobParameters());

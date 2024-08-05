@@ -4,7 +4,6 @@ import com.click.batchServer.domain.entity.AccountHistory;
 import com.click.batchServer.domain.mongo.AccountHistoryDocument;
 import com.click.batchServer.domain.repository.AccountHistoryRepository;
 import jakarta.persistence.EntityManagerFactory;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -80,29 +80,28 @@ public class BatchConfig {
             document.setBhName(item.getBhName());
             document.setBhAmount(item.getBhAmount());
             document.setMyAccount(item.getMyAccount());
-            document.setYourAccount(item.getYourAccount());
             document.setBhStatus(item.getBhStatus());
             document.setBhBalance(item.getBhBalance());
             document.setBhOutType(item.getBhOutType().name());
             document.setCardId(item.getCardId());
-            document.setBhReceive(item.getBhReceive());
             document.setBhMemo(item.getBhMemo());
             document.setCategoryName(item.getCategoryId().getCategoryName());
             return document;
         };
     }
 
-    @Bean
-    public MongoItemWriter<AccountHistoryDocument> writer() {
+    // writer()를 transferStep() 내에서 동적으로 생성하여 반환
+    private MongoItemWriter<AccountHistoryDocument> writer() {
         MongoItemWriter<AccountHistoryDocument> writer = new MongoItemWriter<>();
         writer.setTemplate(mongoTemplate);
         writer.setCollection(getYesterdayCollectionName());
         return writer;
     }
 
+    // 각 배치 실행 시점마다 새로운 컬렉션 이름을 생성
     private String getYesterdayCollectionName() {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HH:mm");
         return yesterday.format(formatter);
     }
 
@@ -110,7 +109,7 @@ public class BatchConfig {
     public Tasklet deleteTasklet() {
         return (contribution, chunkContext) -> {
             accountHistoryRepository.deleteAll();
-            return null;
+            return RepeatStatus.FINISHED;
         };
     }
 }
