@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -20,11 +21,10 @@ public class BatchScheduler {
     private final Job importAccountHistoryJob;
 
     @Scheduled(cron = "0 */3 * * * ?")
-    public void runJob() {
-        try {
-            jobLauncher.run(importAccountHistoryJob, new JobParameters());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+    public void runJob() throws Exception {
+        JobParameters parameters = new JobParametersBuilder()
+            .addLong("time", System.currentTimeMillis())
+            .toJobParameters();
+        jobLauncher.run(importAccountHistoryJob, parameters);
     }
 }
