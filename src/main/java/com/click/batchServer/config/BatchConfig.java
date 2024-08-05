@@ -60,7 +60,7 @@ public class BatchConfig {
     @Bean
     public Tasklet tasklet() {
         return (contribution, chunkContext) -> {
-            String dateString = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
             String collectionName = "data_" + dateString;
 
             List<AccountHistory> mysqlData = accountHistoryRepository.findAll(PageRequest.of(0, 100)).getContent();
