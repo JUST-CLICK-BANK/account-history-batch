@@ -16,12 +16,10 @@ public class AccountHistoryDocument {
     private String bhName;
     private Long bhAmount;
     private String myAccount;
-    private String yourAccount;
     private String bhStatus;
     private Long bhBalance;
     private String bhOutType;
     private Long cardId;
-    private String bhReceive;
     private String bhMemo;
     private String categoryName;
 }
