@@ -85,7 +85,6 @@ public class BatchConfig {
                 mongoTemplate.save(mongoDBData,collectionName);
                 accountHistoryRepository.deleteById(accountHistory.getHistoryId());
             }
-
             return RepeatStatus.FINISHED;
         };
     }
