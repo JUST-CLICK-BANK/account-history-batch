@@ -17,7 +17,7 @@ spring:
     job:
       enabled: true
     jdbc:
-      initialize-schema: embedded
+      initialize-schema: always
 
 server:
   port: 8081
