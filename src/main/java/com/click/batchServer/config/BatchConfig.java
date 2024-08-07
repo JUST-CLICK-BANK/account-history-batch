@@ -13,15 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-// import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.data.MongoItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,8 +55,8 @@ public class BatchConfig {
     @Bean
     public Tasklet tasklet() {
         return (contribution, chunkContext) -> {
-            String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
-            String collectionName = "data_" + dateString;
+            // String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            String collectionName = "PastRecord";
 
             List<AccountHistory> mysqlData = accountHistoryRepository.findAll(PageRequest.of(0, 100)).getContent();
 
@@ -70,23 +65,29 @@ public class BatchConfig {
             }
 
             for (AccountHistory accountHistory : mysqlData) {
-                AccountHistoryDocument mongoDBData = new AccountHistoryDocument();
-                mongoDBData.setBhId(accountHistory.getHistoryId().toString());
-                mongoDBData.setBhAt(accountHistory.getBhAt());
-                mongoDBData.setBhName(accountHistory.getBhName());
-                mongoDBData.setBhAmount(accountHistory.getBhAmount());
-                mongoDBData.setMyAccount(accountHistory.getMyAccount());
-                mongoDBData.setBhStatus(accountHistory.getBhStatus());
-                mongoDBData.setBhBalance(accountHistory.getBhBalance());
-                mongoDBData.setBhOutType(accountHistory.getBhOutType().getName());
-                mongoDBData.setCardId(accountHistory.getCardId());
-                mongoDBData.setBhMemo(accountHistory.getBhMemo());
-                mongoDBData.setCategoryName(accountHistory.getCategoryId().getCategoryName());
+                AccountHistoryDocument mongoDBData = getAccountHistoryDocument(
+                    accountHistory);
                 mongoTemplate.save(mongoDBData,collectionName);
                 accountHistoryRepository.deleteById(accountHistory.getHistoryId());
             }
             return RepeatStatus.FINISHED;
         };
+    }
+
+    private static AccountHistoryDocument getAccountHistoryDocument(AccountHistory accountHistory) {
+        AccountHistoryDocument mongoDBData = new AccountHistoryDocument();
+        mongoDBData.setBhId(accountHistory.getHistoryId().toString());
+        mongoDBData.setBhAt(accountHistory.getBhAt());
+        mongoDBData.setBhName(accountHistory.getBhName());
+        mongoDBData.setBhAmount(accountHistory.getBhAmount());
+        mongoDBData.setMyAccount(accountHistory.getMyAccount());
+        mongoDBData.setBhStatus(accountHistory.getBhStatus());
+        mongoDBData.setBhBalance(accountHistory.getBhBalance());
+        mongoDBData.setBhOutType(accountHistory.getBhOutType().getName());
+        mongoDBData.setCardId(accountHistory.getCardId());
+        mongoDBData.setBhMemo(accountHistory.getBhMemo());
+        mongoDBData.setCategoryName(accountHistory.getCategoryId().getCategoryName());
+        return mongoDBData;
     }
 
     // @Bean
