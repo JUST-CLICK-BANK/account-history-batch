@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "PastRecord")
 public class AccountHistoryDocument {
     @Id
-    private String bhId;
+    private Long historyId;
     private LocalDateTime bhAt;
     private String bhName;
     private Long bhAmount;

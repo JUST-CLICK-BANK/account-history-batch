@@ -76,7 +76,7 @@ public class BatchConfig {
 
     private static AccountHistoryDocument getAccountHistoryDocument(AccountHistory accountHistory) {
         AccountHistoryDocument mongoDBData = new AccountHistoryDocument();
-        mongoDBData.setBhId(accountHistory.getHistoryId().toString());
+        mongoDBData.setHistoryId(accountHistory.getHistoryId());
         mongoDBData.setBhAt(accountHistory.getBhAt());
         mongoDBData.setBhName(accountHistory.getBhName());
         mongoDBData.setBhAmount(accountHistory.getBhAmount());
