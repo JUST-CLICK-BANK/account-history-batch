@@ -12,7 +12,10 @@ spring:
     show-sql: true
   data:
     mongodb:
-      uri: mongodb://localhost:27017/account_history
+#      uri: mongodb://localhost:27017/account_history
+      uri: ${SPRING_DATA_MONGODB_URI}
+      username: ${SPRING_DATA_MONGODB_USERNAME}
+      password: ${SPRING_DATA_MONGODB_PASSWORD}
   batch:
     job:
       enabled: true
@@ -21,6 +24,7 @@ spring:
   sql:
     init:
       schema-locations: classpath:schema.sql
+  s
 
 server:
   port: 8081
