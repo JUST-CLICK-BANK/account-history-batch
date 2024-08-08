@@ -21,5 +21,5 @@ public class AccountHistoryDocument {
     private String bhOutType;
     private Long cardId;
     private String bhMemo;
-    private String categoryName;
+    private CategoryDocument categoryId;
 }
