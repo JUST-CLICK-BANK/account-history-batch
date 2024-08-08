@@ -20,7 +20,7 @@ public class BatchScheduler {
 
     private final Job importAccountHistoryJob;
 
-    @Scheduled(cron = "0 0 14 * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void runJob() throws Exception {
         JobParameters parameters = new JobParametersBuilder()
             .addLong("time", System.currentTimeMillis())
