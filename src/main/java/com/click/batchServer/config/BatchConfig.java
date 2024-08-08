@@ -2,6 +2,7 @@ package com.click.batchServer.config;
 
 import com.click.batchServer.domain.entity.AccountHistory;
 import com.click.batchServer.domain.mongo.AccountHistoryDocument;
+import com.click.batchServer.domain.mongo.CategoryDocument;
 import com.click.batchServer.domain.repository.AccountHistoryRepository;
 import jakarta.persistence.EntityManagerFactory;
 import java.text.SimpleDateFormat;
@@ -75,6 +76,8 @@ public class BatchConfig {
     }
 
     private static AccountHistoryDocument getAccountHistoryDocument(AccountHistory accountHistory) {
+        CategoryDocument categoryDocument
+            = new CategoryDocument(accountHistory.getCategoryId().getCategoryId(), accountHistory.getCategoryId().getCategoryName());
         AccountHistoryDocument mongoDBData = new AccountHistoryDocument();
         mongoDBData.setHistoryId(accountHistory.getHistoryId());
         mongoDBData.setBhAt(accountHistory.getBhAt());
@@ -86,7 +89,7 @@ public class BatchConfig {
         mongoDBData.setBhOutType(accountHistory.getBhOutType().getName());
         mongoDBData.setCardId(accountHistory.getCardId());
         mongoDBData.setBhMemo(accountHistory.getBhMemo());
-        mongoDBData.setCategoryName(accountHistory.getCategoryId().getCategoryName());
+        mongoDBData.setCategoryId(categoryDocument);
         return mongoDBData;
     }
 
