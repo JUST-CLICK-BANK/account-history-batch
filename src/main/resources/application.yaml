@@ -18,6 +18,9 @@ spring:
       enabled: true
     jdbc:
       initialize-schema: embedded
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
 
 server:
   port: 8081
