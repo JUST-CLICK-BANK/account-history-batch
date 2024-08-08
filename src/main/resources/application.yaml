@@ -12,12 +12,12 @@ spring:
     show-sql: true
   data:
     mongodb:
-      uri: mongodb://localhost:27017/AccountHistory
+      uri: mongodb://localhost:27017/account_history
   batch:
     job:
       enabled: true
     jdbc:
-      initialize-schema: always
+      initialize-schema: embedded
 
 server:
   port: 8081
