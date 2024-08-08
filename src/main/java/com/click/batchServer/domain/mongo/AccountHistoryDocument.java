@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document(collection = "account_history")
+@Document(collection = "PastRecord")
 public class AccountHistoryDocument {
     @Id
     private String bhId;
