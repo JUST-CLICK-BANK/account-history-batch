@@ -56,7 +56,6 @@ public class BatchConfig {
     @Bean
     public Tasklet tasklet() {
         return (contribution, chunkContext) -> {
-            // String dateString = new SimpleDateFormat("yyyyMMdd").format(new Date());
             String collectionName = "PastRecord";
 
             List<AccountHistory> mysqlData = accountHistoryRepository.findAll(PageRequest.of(0, 100)).getContent();
@@ -93,73 +92,4 @@ public class BatchConfig {
         return mongoDBData;
     }
 
-    // @Bean
-    // public Step transferStep() {
-    //     return new StepBuilder("transferStep", jobRepository)
-    //         .<AccountHistory, AccountHistoryDocument>chunk(100, transactionManager)
-    //         .reader(reader())
-    //         .processor(processor())
-    //         .writer(writer())
-    //         .allowStartIfComplete(true)
-    //         .build();
-    // }
-
-    // @Bean
-    // public Step deleteStep() {
-    //     return new StepBuilder("deleteStep", jobRepository)
-    //         .tasklet(deleteTasklet(), transactionManager)
-    //         .allowStartIfComplete(true)
-    //         .build();
-    // }
-    //
-    // @Bean
-    // public JpaPagingItemReader<AccountHistory> reader() {
-    //     return new JpaPagingItemReaderBuilder<AccountHistory>()
-    //         .name("accountHistoryReader")
-    //         .entityManagerFactory(entityManagerFactory)
-    //         .queryString("SELECT a FROM AccountHistory a")
-    //         .pageSize(20)
-    //         .build();
-    // }
-    //
-    // @Bean
-    // public ItemProcessor<AccountHistory, AccountHistoryDocument> processor() {
-    //     return item -> {
-    //         AccountHistoryDocument document = new AccountHistoryDocument();
-    //         document.setBhAt(item.getBhAt());
-    //         document.setBhName(item.getBhName());
-    //         document.setBhAmount(item.getBhAmount());
-    //         document.setMyAccount(item.getMyAccount());
-    //         document.setBhStatus(item.getBhStatus());
-    //         document.setBhBalance(item.getBhBalance());
-    //         document.setBhOutType(item.getBhOutType().name());
-    //         document.setCardId(item.getCardId());
-    //         document.setBhMemo(item.getBhMemo());
-    //         document.setCategoryName(item.getCategoryId().getCategoryName());
-    //         return document;
-    //     };
-    // }
-    //
-    // // writer()를 transferStep() 내에서 동적으로 생성하여 반환
-    // private MongoItemWriter<AccountHistoryDocument> writer() {
-    //     MongoItemWriter<AccountHistoryDocument> writer = new MongoItemWriter<>();
-    //     writer.setTemplate(mongoTemplate);
-    //     writer.setCollection(getYesterdayCollectionName());
-    //     return writer;
-    // }
-    //
-    // // 각 배치 실행 시점마다 새로운 컬렉션 이름을 생성
-    // private String getYesterdayCollectionName() {
-    //     LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-    //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HH:mm");
-    //     return yesterday.format(formatter);
-    // }
-    //
-    // @Bean
-    // public Tasklet deleteTasklet() {
-    //     return (contribution, chunkContext) -> {
-    //         accountHistoryRepository.deleteAll();
-    //         return RepeatStatus.FINISHED;
-    //     };
-    // }
 }
