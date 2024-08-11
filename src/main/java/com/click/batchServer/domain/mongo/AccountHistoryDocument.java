@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
 @Setter
 @Document(collection = "PastRecord")
 public class AccountHistoryDocument {
     @Id
+    @Field("_id")
     private Long historyId;
     private LocalDateTime bhAt;
     private String bhName;
