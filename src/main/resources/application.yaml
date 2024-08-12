@@ -12,12 +12,12 @@ spring:
     show-sql: true
   data:
     mongodb:
-      uri: mongodb://localhost:27017/account_history
-      username: root
-      password: 1234
-#      uri: ${SPRING_DATA_MONGODB_URI}
-#      username: ${SPRING_DATA_MONGODB_USERNAME}
-#      password: ${SPRING_DATA_MONGODB_PASSWORD}
+#      uri: mongodb://localhost:27017/account_history
+#      username: root
+#      password: 1234
+      uri: ${SPRING_DATA_MONGODB_URI}
+      username: ${SPRING_DATA_MONGODB_USERNAME}
+      password: ${SPRING_DATA_MONGODB_PASSWORD}
   batch:
     job:
       enabled: false
