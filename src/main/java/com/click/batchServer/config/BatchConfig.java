@@ -15,6 +15,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.builder.SimpleJobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -36,15 +37,30 @@ public class BatchConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
 
-
-
     @Bean
     public Job importAccountHistoryJob() {
-        return new JobBuilder("importAccountHistoryJob", jobRepository)
-            .start(transferStep())
-            // .next(deleteStep())
-            .build();
+        // 현재 날짜 확인
+        LocalDateTime now = LocalDateTime.now();
+
+        JobBuilder jobBuilder = new JobBuilder("importAccountHistoryJob", jobRepository);
+        SimpleJobBuilder simpleJobBuilder = jobBuilder.start(transferStep());
+
+        // 매월 1일인지 확인하여 조건에 따라 Step 추가
+        // if (now.getDayOfMonth() == 1) {
+        if (now.getMinute() == 0) {
+            return simpleJobBuilder.next(updateAmountByCategoryStep()).build();
+        } else {
+            return simpleJobBuilder.build();
+        }
     }
+
+    // @Bean
+    // public Job importAccountHistoryJob() {
+    //     return new JobBuilder("importAccountHistoryJob", jobRepository)
+    //         .start(transferStep())
+    //         // .next(deleteStep())
+    //         .build();
+    // }
 
     @Bean
     public Step transferStep() {
@@ -78,7 +94,7 @@ public class BatchConfig {
         CategoryDocument categoryDocument
             = new CategoryDocument(accountHistory.getCategoryId().getCategoryId(), accountHistory.getCategoryId().getCategoryName());
         AccountHistoryDocument mongoDBData = new AccountHistoryDocument();
-        mongoDBData.setHistoryId(accountHistory.getHistoryId());
+        mongoDBData.setHistoryId(accountHistory.getHistoryId().toString());
         mongoDBData.setBhAt(accountHistory.getBhAt());
         mongoDBData.setBhName(accountHistory.getBhName());
         mongoDBData.setBhAmount(accountHistory.getBhAmount());
@@ -90,6 +106,24 @@ public class BatchConfig {
         mongoDBData.setBhMemo(accountHistory.getBhMemo());
         mongoDBData.setCategoryId(categoryDocument);
         return mongoDBData;
+    }
+
+    @Bean
+    public Step updateAmountByCategoryStep() {
+        return new StepBuilder("updateAmountByCategoryStep", jobRepository)
+            .tasklet(updateAmountByCategoryTasklet(), transactionManager)
+            .build();
+    }
+
+    @Bean
+    public Tasklet updateAmountByCategoryTasklet() {
+        return (contribution, chunkContext) -> {
+            int updatedRows = entityManagerFactory.createEntityManager()
+                .createQuery("UPDATE AmountByCategory a SET a.abcDisable = false WHERE a.abcDisable = true")
+                .executeUpdate();
+            System.out.println("Updated rows: " + updatedRows);
+            return RepeatStatus.FINISHED;
+        };
     }
 
 }
